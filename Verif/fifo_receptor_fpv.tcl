@@ -1,5 +1,5 @@
 clear -all
-set design_top fifo
+set design_top fifo_receptor
 #lista de archivos que queremos compilar (RTL)
 analyze -sv -f rtl_verif.flist 
 analyze -sv -f verif_fv.flist
