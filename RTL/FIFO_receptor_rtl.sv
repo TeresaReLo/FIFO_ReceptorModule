@@ -22,7 +22,6 @@ module spi_serializer #(
 	state_t state, next_state;
     	logic [DATAWIDTH-1:0] shift_reg;
     	logic [BITCOUNTERWIDTH:0] bit_counter;
-  	bit flag;
   	logic clk_div;
     	logic sclk_enable;
  
@@ -38,7 +37,7 @@ module spi_serializer #(
     	// Generate sclk based on divided clock and enable signal
     	always_ff @(posedge clk or posedge rst) begin
         	if (rst) begin
-            		sclk <= 0;
+            		sclk <= 1'b0;
         	end else if (clk_div && sclk_enable) begin
             		sclk <= ~sclk;
         	end
@@ -50,7 +49,6 @@ module spi_serializer #(
             		state <= IDLE;
             		shift_reg <= '0;
             		bit_counter <= '0;	
-        		flag  <= 1'b0;
           		done <= 1'b0;
             		mosi <= 1'b0;
             		sclk_enable <= 1'b0;
@@ -61,18 +59,16 @@ module spi_serializer #(
                     shift_reg <= readData;
                     bit_counter <= DATAWIDTH;
                     sclk_enable <= 1'b1;  // Enable sclk during SHIFT state
-                  	flag <= 1'b1;
                 end
                 SHIFT: begin
-                    if (sclk && clk_div) begin  // Shift data on the positive edge of sclk
-                      	flag <= 1'b0;
-						mosi <= shift_reg[DATAWIDTH-1];
+                    if (sclk && clk_div) begin  // Shift data on the negative edge of sclk
+			mosi <= shift_reg[DATAWIDTH-1];
                         shift_reg <= shift_reg << 1; //1 Shift Left
                         bit_counter <= bit_counter - 1;
                     end
                 end
                 COMPLETE: begin
-                    done <= 1;
+                    done <= 1'b1;
                     sclk_enable <= 1'b0;  // Disable sclk in COMPLETE state
                 end
             endcase
@@ -83,7 +79,7 @@ module spi_serializer #(
         	next_state = state;
         	case (state)
             	IDLE: begin //00
-              		if (full || !empty) next_state = LOAD;  // Only start when full and not empty
+              		if (full || !empty) next_state = LOAD;  // start when full or not empty
             	end
             	LOAD: begin //01
               		next_state = SHIFT;
