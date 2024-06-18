@@ -44,17 +44,19 @@ module spi_serializer #(
     	end
   
  
-	always_ff @(posedge clk or posedge rst) begin
-      		if (rst || empty) begin
-            		state <= IDLE;
-            		shift_reg <= '0;
+    always_ff @(posedge clk or posedge rst) begin
+      if (rst || empty) begin
+            state <= IDLE;
+        end else begin
+            state <= next_state;
+            case (state)
+              	IDLE: begin
+			shift_reg <= '0;
             		bit_counter <= '0;	
-          		done <= 1'b0;
+                 	done <= 1'b0;
             		mosi <= 1'b0;
             		sclk_enable <= 1'b0;
-        	end else begin
-            		state <= next_state;
-            	case (state)
+                end
                 LOAD: begin
                     shift_reg <= readData;
                     bit_counter <= DATAWIDTH;
@@ -79,7 +81,7 @@ module spi_serializer #(
         	next_state = state;
         	case (state)
             	IDLE: begin //00
-              		if (full || !empty) next_state = LOAD;  // start when full or not empty
+              		if ((full || !empty)&& !done) next_state = LOAD;  //start when full or not empty and done is not active.
             	end
             	LOAD: begin //01
               		next_state = SHIFT;
