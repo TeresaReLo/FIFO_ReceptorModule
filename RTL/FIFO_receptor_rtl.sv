@@ -44,16 +44,21 @@ module spi_serializer #(
     	end
   
  
-    always_ff @(posedge clk or posedge rst) begin
-      if (rst || empty) begin
-            state <= IDLE;
-        end else begin
-            state <= next_state;
-            case (state)
+	always_ff @(posedge clk or posedge rst) begin
+      		if (rst || empty) begin
+        		state <= IDLE;
+        		shift_reg <= '0;
+        		bit_counter <= '0;
+        		done <= 1'b0;
+            		mosi <= 1'b0;
+            		sclk_enable <= 1'b0;
+        	end else begin
+            	state <= next_state;
+            	case (state)
               	IDLE: begin
 			shift_reg <= '0;
             		bit_counter <= '0;	
-                 	done <= 1'b0;
+           		done <= 1'b0;
             		mosi <= 1'b0;
             		sclk_enable <= 1'b0;
                 end
@@ -63,7 +68,7 @@ module spi_serializer #(
                     sclk_enable <= 1'b1;  // Enable sclk during SHIFT state
                 end
                 SHIFT: begin
-                    if (sclk && clk_div) begin  // Shift data on the negative edge of sclk
+                    if (sclk && clk_div) begin  // Shift data on the positive edge of sclk
 			mosi <= shift_reg[DATAWIDTH-1];
                         shift_reg <= shift_reg << 1; //1 Shift Left
                         bit_counter <= bit_counter - 1;
