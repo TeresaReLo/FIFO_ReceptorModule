@@ -6,10 +6,10 @@ module spi_serializer #(
     input  logic                 rst,
     input  logic                 full,        // Use full signal to start serialization
     input  logic                 empty,       // Use empty signal to prevent operations when FIFO is empty
-    input  logic [DATAWIDTH-1:0] readData,
+    input  logic [DATAWIDTH-1:0] read_data,
     output logic                 sclk,
     output logic                 mosi,
-    output logic                 done
+    output logic                 done                 	
 );
 
     typedef enum logic [1:0] {
@@ -63,7 +63,7 @@ module spi_serializer #(
             		sclk_enable <= 1'b0;
                 end
                 LOAD: begin
-                    shift_reg <= readData;
+                    shift_reg <= read_data;
                     bit_counter <= DATAWIDTH;
                     sclk_enable <= 1'b1;  // Enable sclk during SHIFT state
                 end
