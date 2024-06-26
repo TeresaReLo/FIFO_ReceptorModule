@@ -1,8 +1,10 @@
+import spi_defines_pkg::*;
+
 module tb;
 
 // Parameters
 
-  parameter DATAWIDTH = 32;
+  parameter DATAWIDTH = `DATA_WIDTH;
   parameter BITCOUNTERWIDTH = $clog2(DATAWIDTH);
 
   // Signals
@@ -111,6 +113,6 @@ initial begin
  
 
 
-//bind spi_serializer fv_fifo fv_fifo_inst(.*); 
+bind spi_serializer fv_spi fv_spi_inst(.*); 
 
 endmodule : tb
