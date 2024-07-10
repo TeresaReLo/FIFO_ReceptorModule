@@ -68,7 +68,7 @@ module spi_serializer #(
                 end
                 LOAD: begin
                     shift_reg <= read_data;
-                    read_en <= 1'b1;
+                    read_en <= 1'b1;   
                     bit_counter <= DATAWIDTH;
                     sclk_enable <= 1'b1;  // Enable sclk during SHIFT state
                 end
@@ -105,4 +105,3 @@ module spi_serializer #(
         	endcase
     	end
 endmodule
-
