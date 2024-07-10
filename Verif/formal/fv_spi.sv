@@ -11,7 +11,7 @@
 	Date		: Jun 2024
 	-----------------------------------------------------------------------------------------
 */
-import fifo_defines_pkg::*;
+import spi_defines_pkg::*;
 
 module fv_spi(
     input                       clk,
