@@ -65,9 +65,9 @@ module spi_serializer #(
 
 			case (state)
               		IDLE: begin
-					shift_reg <= '0;
+			shift_reg <= '0;
             		bit_counter <= '0;	
-           			done <= 1'b0;
+           		done <= 1'b0;
             		mosi <= 1'b0;
             		sclk_enable <= 1'b0;
                 	end
